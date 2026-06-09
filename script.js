@@ -6,6 +6,8 @@ const status = document.getElementById("status");
 
 let generatedPdf = null;
 
+// Preview Images
+
 imageInput.addEventListener("change", () => {
 
 ```
@@ -34,17 +36,20 @@ Array.from(files).forEach(file => {
     };
 
     reader.readAsDataURL(file);
+
 });
 ```
 
 });
+
+// Convert JPG To PDF
 
 convertBtn.addEventListener("click", async () => {
 
 ```
 const files = imageInput.files;
 
-if(!files.length){
+if (!files.length) {
     alert("Please select JPG images");
     return;
 }
@@ -52,9 +57,10 @@ if(!files.length){
 status.innerText = "Creating PDF...";
 
 const { jsPDF } = window.jspdf;
+
 const pdf = new jsPDF();
 
-for(let i = 0; i < files.length; i++){
+for (let i = 0; i < files.length; i++) {
 
     const imageData = await fileToDataURL(files[i]);
     const img = await loadImage(imageData);
@@ -73,7 +79,7 @@ for(let i = 0; i < files.length; i++){
     const x = (pageWidth - imgWidth) / 2;
     const y = (pageHeight - imgHeight) / 2;
 
-    if(i > 0){
+    if (i > 0) {
         pdf.addPage();
     }
 
@@ -95,15 +101,19 @@ downloadBtn.style.display = "block";
 
 });
 
+// Download PDF
+
 downloadBtn.addEventListener("click", () => {
 
 ```
-if(!generatedPdf) return;
+if (!generatedPdf) return;
 
 generatedPdf.save("jpg-to-pdf.pdf");
 ```
 
 });
+
+// Helper Functions
 
 function fileToDataURL(file){
 
@@ -112,9 +122,10 @@ return new Promise((resolve) => {
 
     const reader = new FileReader();
 
-    reader.onload = e => resolve(e.target.result);
+    reader.onload = (e) => resolve(e.target.result);
 
     reader.readAsDataURL(file);
+
 });
 ```
 
@@ -130,6 +141,7 @@ return new Promise((resolve) => {
     img.onload = () => resolve(img);
 
     img.src = src;
+
 });
 ```
 
