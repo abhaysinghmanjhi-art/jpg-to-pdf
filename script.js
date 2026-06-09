@@ -6,7 +6,6 @@ const status = document.getElementById("status");
 
 let generatedPdf = null;
 
-// Preview Images
 imageInput.addEventListener("change", () => {
 
 ```
@@ -27,7 +26,6 @@ Array.from(files).forEach(file => {
         const img = document.createElement("img");
 
         img.src = e.target.result;
-
         img.style.maxWidth = "120px";
         img.style.margin = "8px";
         img.style.borderRadius = "10px";
@@ -36,13 +34,11 @@ Array.from(files).forEach(file => {
     };
 
     reader.readAsDataURL(file);
-
 });
 ```
 
 });
 
-// Convert JPG To PDF
 convertBtn.addEventListener("click", async () => {
 
 ```
@@ -56,15 +52,11 @@ if(!files.length){
 status.innerText = "Creating PDF...";
 
 const { jsPDF } = window.jspdf;
-
 const pdf = new jsPDF();
 
 for(let i = 0; i < files.length; i++){
 
-    const file = files[i];
-
-    const imageData = await fileToDataURL(file);
-
+    const imageData = await fileToDataURL(files[i]);
     const img = await loadImage(imageData);
 
     const pageWidth = pdf.internal.pageSize.getWidth();
@@ -98,24 +90,21 @@ for(let i = 0; i < files.length; i++){
 generatedPdf = pdf;
 
 status.innerText = "PDF Ready ✔";
-
-downloadBtn.style.display = "inline-block";
+downloadBtn.style.display = "block";
 ```
 
 });
 
-// Download PDF
 downloadBtn.addEventListener("click", () => {
 
 ```
 if(!generatedPdf) return;
 
-generatedPdf.save("ilabpdf-jpg-to-pdf.pdf");
+generatedPdf.save("jpg-to-pdf.pdf");
 ```
 
 });
 
-// Helper Function
 function fileToDataURL(file){
 
 ```
@@ -126,7 +115,6 @@ return new Promise((resolve) => {
     reader.onload = e => resolve(e.target.result);
 
     reader.readAsDataURL(file);
-
 });
 ```
 
@@ -142,7 +130,6 @@ return new Promise((resolve) => {
     img.onload = () => resolve(img);
 
     img.src = src;
-
 });
 ```
 
