@@ -7,142 +7,128 @@ const status = document.getElementById("status");
 let generatedPdf = null;
 
 // Preview Images
-
 imageInput.addEventListener("change", () => {
 
-```
-preview.innerHTML = "";
-downloadBtn.style.display = "none";
-generatedPdf = null;
+    preview.innerHTML = "";
+    downloadBtn.style.display = "none";
+    generatedPdf = null;
 
-const files = imageInput.files;
+    const files = imageInput.files;
 
-if (!files.length) return;
+    if (!files.length) return;
 
-Array.from(files).forEach(file => {
+    Array.from(files).forEach(file => {
 
-    const reader = new FileReader();
+        const reader = new FileReader();
 
-    reader.onload = function(e){
+        reader.onload = function (e) {
 
-        const img = document.createElement("img");
+            const img = document.createElement("img");
 
-        img.src = e.target.result;
-        img.style.maxWidth = "120px";
-        img.style.margin = "8px";
-        img.style.borderRadius = "10px";
+            img.src = e.target.result;
+            img.style.maxWidth = "120px";
+            img.style.margin = "8px";
+            img.style.borderRadius = "10px";
 
-        preview.appendChild(img);
-    };
+            preview.appendChild(img);
+        };
 
-    reader.readAsDataURL(file);
-
-});
-```
+        reader.readAsDataURL(file);
+    });
 
 });
 
 // Convert JPG To PDF
-
 convertBtn.addEventListener("click", async () => {
 
-```
-const files = imageInput.files;
+    const files = imageInput.files;
 
-if (!files.length) {
-    alert("Please select JPG images");
-    return;
-}
-
-status.innerText = "Creating PDF...";
-
-const { jsPDF } = window.jspdf;
-
-const pdf = new jsPDF();
-
-for (let i = 0; i < files.length; i++) {
-
-    const imageData = await fileToDataURL(files[i]);
-    const img = await loadImage(imageData);
-
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-
-    const ratio = Math.min(
-        pageWidth / img.width,
-        pageHeight / img.height
-    );
-
-    const imgWidth = img.width * ratio;
-    const imgHeight = img.height * ratio;
-
-    const x = (pageWidth - imgWidth) / 2;
-    const y = (pageHeight - imgHeight) / 2;
-
-    if (i > 0) {
-        pdf.addPage();
+    if (!files.length) {
+        alert("Please select JPG images");
+        return;
     }
 
-    pdf.addImage(
-        imageData,
-        "JPEG",
-        x,
-        y,
-        imgWidth,
-        imgHeight
-    );
-}
+    status.innerText = "Creating PDF...";
 
-generatedPdf = pdf;
+    const { jsPDF } = window.jspdf;
 
-status.innerText = "PDF Ready ✔";
-downloadBtn.style.display = "block";
-```
+    const pdf = new jsPDF();
+
+    for (let i = 0; i < files.length; i++) {
+
+        const imageData = await fileToDataURL(files[i]);
+        const img = await loadImage(imageData);
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        const ratio = Math.min(
+            pageWidth / img.width,
+            pageHeight / img.height
+        );
+
+        const imgWidth = img.width * ratio;
+        const imgHeight = img.height * ratio;
+
+        const x = (pageWidth - imgWidth) / 2;
+        const y = (pageHeight - imgHeight) / 2;
+
+        if (i > 0) {
+            pdf.addPage();
+        }
+
+        pdf.addImage(
+            imageData,
+            "JPEG",
+            x,
+            y,
+            imgWidth,
+            imgHeight
+        );
+    }
+
+    generatedPdf = pdf;
+
+    status.innerText = "PDF Ready ✔";
+    downloadBtn.style.display = "block";
 
 });
 
 // Download PDF
-
 downloadBtn.addEventListener("click", () => {
 
-```
-if (!generatedPdf) return;
+    if (!generatedPdf) return;
 
-generatedPdf.save("jpg-to-pdf.pdf");
-```
+    generatedPdf.save("jpg-to-pdf.pdf");
 
 });
 
-// Helper Functions
+// Helper Function
+function fileToDataURL(file) {
 
-function fileToDataURL(file){
+    return new Promise((resolve) => {
 
-```
-return new Promise((resolve) => {
+        const reader = new FileReader();
 
-    const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
 
-    reader.onload = (e) => resolve(e.target.result);
+        reader.readAsDataURL(file);
 
-    reader.readAsDataURL(file);
-
-});
-```
+    });
 
 }
 
-function loadImage(src){
+// Helper Function
+function loadImage(src) {
 
-```
-return new Promise((resolve) => {
+    return new Promise((resolve) => {
 
-    const img = new Image();
+        const img = new Image();
 
-    img.onload = () => resolve(img);
+        img.onload = () => resolve(img);
 
-    img.src = src;
+        img.src = src;
 
-});
-```
+    });
 
 }
